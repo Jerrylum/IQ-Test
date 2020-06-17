@@ -1,0 +1,164 @@
+package io.gitlab.jerrylum.iqtestapplication;
+
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.os.AsyncTask;
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import androidx.appcompat.app.AppCompatActivity;
+import io.gitlab.jerrylum.iqtestapplication.OO.DownloadQuestionsTask;
+import io.gitlab.jerrylum.iqtestapplication.OO.Question;
+import io.gitlab.jerrylum.iqtestapplication.OO.Test;
+
+public class API {
+    private static final String DBPATH = "/data/data/io.gitlab.jerrylum.iqtestapplication/MainDB";
+
+    private static SQLiteDatabase db;
+    private static String sql;
+    private static Cursor cursor = null;
+    private static DownloadQuestionsTask task;
+
+    public static List<Question> CloudQuestions;
+
+    public static void toPage(AppCompatActivity aca, Class<?> cls){
+        Intent i = new Intent(aca, cls);
+        aca.startActivity(i);
+    }
+
+    public static void initDatabase() {
+        try {
+            // Create a database if it does not exist
+            db = SQLiteDatabase.openDatabase(DBPATH, null, SQLiteDatabase.CREATE_IF_NECESSARY);
+
+            // db.execSQL("DROP TABLE QuestionsLog;");
+            // db.execSQL("DROP TABLE TestsLog;");
+
+            sql =   "CREATE TABLE IF NOT EXISTS `QuestionsLog` (\n" +
+                    "  `questionNo` int PRIMARY KEY,\n" +
+                    "  `question` text,\n" +
+                    "  `yourAnswer` text,\n" +
+                    "  `isCorrect` ENUM (1, 0)\n" +
+                    ");\n";
+            db.execSQL(sql);
+            sql =   "CREATE TABLE IF NOT EXISTS `TestsLog` (\n" +
+                    "  `id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                    "  `testDate` text,\n" +
+                    "  `testTime` text,\n" +
+                    "  `duration` int,\n" +
+                    "  `correctCount` int\n" +
+                    ");\n";
+            db.execSQL(sql);
+
+            Log.d("ApiLog", "Created database");
+            db.close();
+        } catch (SQLiteException e) {
+            Log.d("ApiLog", "Cannot created database, " + e);
+        }
+    }
+
+    public static void fetchCloudQuestion() {
+        if (task == null ||
+                task.getStatus().equals(AsyncTask.Status.FINISHED)) {
+            task = new DownloadQuestionsTask();
+            task.execute();
+        }
+    }
+
+    public static boolean saveTest(int duration, int correct) {
+        try {
+            db = SQLiteDatabase.openDatabase(DBPATH, null, SQLiteDatabase.OPEN_READWRITE);
+
+            db.execSQL("INSERT INTO TestsLog (`testDate`, `testTime`, `duration`, `correctCount`) " +
+                            "VALUES (date('now', 'localtime'), time('now', 'localtime'), ?, ?)",
+                           new Integer[] {duration, correct}
+                       );
+
+            db.close();
+            return true;
+        } catch (SQLiteException e) {
+            Log.d("ApiLog", "Cannot add test, " + e);
+            return false;
+        }
+    }
+
+    public static boolean saveQuestion(Question q) {
+        try {
+            db = SQLiteDatabase.openDatabase(DBPATH, null, SQLiteDatabase.OPEN_READWRITE);
+
+            db.execSQL("INSERT INTO QuestionsLog " +
+                            "VALUES (?, ?, ?, ?)",
+                    new Object[] {q.no, q.question, q.answer, q.isCorrect ? 1 : 0}
+            );
+
+            db.close();
+            return true;
+        } catch (SQLiteException e) {
+            Log.d("ApiLog", "Cannot add test, " + e);
+            return false;
+        }
+    }
+
+    public static List<Test> getAllTest() {
+        List<Test> tests = new ArrayList<Test>();
+
+        try {
+            db = SQLiteDatabase.openDatabase(DBPATH, null, SQLiteDatabase.OPEN_READONLY);
+
+            cursor = db.rawQuery("select * from TestsLog", null);
+
+            while (cursor.moveToNext()) {
+                tests.add(new Test(
+                        cursor.getInt(0),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getInt(3),
+                        cursor.getInt(4)
+                ));
+            }
+
+            db.close();
+        } catch (SQLiteException e) {
+            Log.d("ApiLog", "Cannot get all tests, " + e);
+        }
+
+        return tests;
+    }
+
+
+    public static List<Question> getAllQuestion() {
+        List<Question> q = new ArrayList<Question>();
+
+        try {
+            db = SQLiteDatabase.openDatabase(DBPATH, null, SQLiteDatabase.OPEN_READONLY);
+
+            cursor = db.rawQuery("select * from QuestionsLog", null);
+
+            while (cursor.moveToNext()) {
+                q.add(new Question(
+                        cursor.getInt(0),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getInt(3) == 1
+                ));
+            }
+
+            db.close();
+        } catch (SQLiteException e) {
+            Log.d("ApiLog", "Cannot get all tests, " + e);
+        }
+
+        return q;
+    }
+
+    public static SharedPreferences.Editor getConfig() {
+        SharedPreferences.Editor editor = MainActivity.Self.getPreferences(0).edit();
+        return editor;
+    }
+
+}
