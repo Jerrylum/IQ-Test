@@ -41,10 +41,10 @@ public class DownloadQuestionsTask extends AsyncTask<String, Integer, String> {
             while((line = bufferedReader.readLine()) != null)
                 result += line;
 
-            Log.d("doInBackground", "get data complete");
+            Log.d("ApiLog", "fetch finished");
             inputStream.close();
         } catch(Exception e) {
-            Log.d("httpexception", e.getMessage());
+            Log.d("ApiLog", e.getMessage());
         }
         return result;
     }

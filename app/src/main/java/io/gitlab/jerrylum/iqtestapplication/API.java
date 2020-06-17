@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +69,7 @@ public class API {
                 task.getStatus().equals(AsyncTask.Status.FINISHED)) {
             task = new DownloadQuestionsTask();
             task.execute();
+            Log.d("ApiLog", "Start fetch question ");
         }
     }
 
@@ -87,7 +90,7 @@ public class API {
         }
     }
 
-    public static boolean saveQuestion(Question q) {
+    public static boolean saveAskedQuestion(Question q) {
         try {
             db = SQLiteDatabase.openDatabase(DBPATH, null, SQLiteDatabase.OPEN_READWRITE);
 
@@ -96,10 +99,26 @@ public class API {
                     new Object[] {q.no, q.question, q.answer, q.isCorrect ? 1 : 0}
             );
 
+            Log.d("ApiLog", "Add question: " + q.no);
+
             db.close();
             return true;
         } catch (SQLiteException e) {
-            Log.d("ApiLog", "Cannot add test, " + e);
+            Log.d("ApiLog", "Cannot add question, " + e);
+            return false;
+        }
+    }
+
+    public static boolean deleteAllAskedQuestions() {
+        try {
+            db = SQLiteDatabase.openDatabase(DBPATH, null, SQLiteDatabase.OPEN_READWRITE);
+
+            db.execSQL("DELETE FROM QuestionsLog;");
+
+            db.close();
+            return true;
+        } catch (SQLiteException e) {
+            Log.d("ApiLog", "Cannot add question, " + e);
             return false;
         }
     }
@@ -131,7 +150,7 @@ public class API {
     }
 
 
-    public static List<Question> getAllQuestion() {
+    public static List<Question> getAllAskedQuestion() {
         List<Question> q = new ArrayList<Question>();
 
         try {
@@ -156,9 +175,32 @@ public class API {
         return q;
     }
 
-    public static SharedPreferences.Editor getConfig() {
+    public static Question getCloudQuestionById(int no) {
+        for (Question q : CloudQuestions)
+            if (q.no == no)
+                return q;
+        return null;
+    }
+
+
+    public static SharedPreferences.Editor setConfig() {
         SharedPreferences.Editor editor = MainActivity.Self.getPreferences(0).edit();
         return editor;
+    }
+
+    public static SharedPreferences getConfig() {
+        return MainActivity.Self.getPreferences(0);
+    }
+
+    public static void setClickableAll(View v, boolean clickable) {
+        v.setClickable(clickable);
+        v.setFocusable(clickable);
+
+        if(v instanceof ViewGroup) {
+            ViewGroup vg = (ViewGroup) v;
+            for (int i = 0; i < vg.getChildCount(); i++)
+                setClickableAll(vg.getChildAt(i), clickable);
+        }
     }
 
 }

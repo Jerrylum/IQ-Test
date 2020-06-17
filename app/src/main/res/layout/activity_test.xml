@@ -1,9 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="20sp"
+    android:paddingTop="20sp"
     tools:context=".TestActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/q_no"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="5sp"
+        android:text="Q1"
+        android:textColor="@android:color/black"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/question"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="What does the fox say?"
+        android:textColor="@android:color/black"
+        android:textSize="20sp" />
+
+    <RadioGroup
+        android:id="@+id/answer_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="50sp"
+        android:paddingTop="20sp">
+
+        <RadioButton
+            android:id="@+id/answer_a"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="Meow"
+            android:textSize="18sp" />
+
+        <RadioButton
+            android:id="@+id/answer_b"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="Ha He Hea"
+            android:textSize="18sp" />
+
+        <RadioButton
+            android:id="@+id/answer_c"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="Wow Woah Wow"
+            android:textSize="18sp" />
+
+        <RadioButton
+            android:id="@+id/answer_d"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="Ga Gaa Ga"
+            android:textSize="18sp" />
+
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10sp"
+        android:text="You are incorrect"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        tools:visibility="visible" />
+
+    <Button
+        android:id="@+id/btn_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="btnNext_OnClick"
+        android:text="Next"
+        tools:visibility="invisible" />
+</LinearLayout>
