@@ -73,13 +73,13 @@ public class API {
         }
     }
 
-    public static boolean saveTest(int duration, int correct) {
+    public static boolean saveTest(long duration, int correct) {
         try {
             db = SQLiteDatabase.openDatabase(DBPATH, null, SQLiteDatabase.OPEN_READWRITE);
 
             db.execSQL("INSERT INTO TestsLog (`testDate`, `testTime`, `duration`, `correctCount`) " +
                             "VALUES (date('now', 'localtime'), time('now', 'localtime'), ?, ?)",
-                           new Integer[] {duration, correct}
+                           new Object[] {duration, correct}
                        );
 
             db.close();
@@ -118,7 +118,7 @@ public class API {
             db.close();
             return true;
         } catch (SQLiteException e) {
-            Log.d("ApiLog", "Cannot add question, " + e);
+            Log.d("ApiLog", "Cannot delete question, " + e);
             return false;
         }
     }

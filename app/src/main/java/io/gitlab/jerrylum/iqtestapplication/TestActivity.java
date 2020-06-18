@@ -2,7 +2,9 @@ package io.gitlab.jerrylum.iqtestapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 import io.gitlab.jerrylum.iqtestapplication.OO.Question;
+import io.gitlab.jerrylum.iqtestapplication.Timer.AndroidStopwatchTimer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +16,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class TestActivity extends AppCompatActivity {
 
@@ -28,6 +32,7 @@ public class TestActivity extends AppCompatActivity {
     RadioButton rbAnswerD;
     TextView tvTips;
     Button btnNext;
+    TextView tvTimeSpan;
 
     RadioButton[] rbButtons;
 
@@ -37,6 +42,8 @@ public class TestActivity extends AppCompatActivity {
     int asking = 0; // 0 = init, 1 ~ 5 = asking question no; index + 1
     Question askingQuestion;
     RadioButton correctBtn;
+
+    AndroidStopwatchTimer ast;
 
     int correctCount = 0;
 
@@ -60,6 +67,7 @@ public class TestActivity extends AppCompatActivity {
         rbAnswerD = findViewById(R.id.answer_d);
         tvTips = findViewById(R.id.tips);
         btnNext = findViewById(R.id.btn_next);
+        tvTimeSpan = findViewById(R.id.time_span);
 
         rbButtons = new RadioButton[]{rbAnswerA, rbAnswerB, rbAnswerC, rbAnswerD};
 
@@ -71,9 +79,22 @@ public class TestActivity extends AppCompatActivity {
             }
         });
 
+        ast = new AndroidStopwatchTimer();
+
+        new Timer().scheduleAtFixedRate(new TimerTask(){
+            @Override
+            public void run(){
+                tvTimeSpan.setText("Time: " + (ast.getDisplayTicks() / 1000) + "s");
+            }
+        },0,100);
+
         // data init
 
         _init_restoreQuestion();
+
+        if (asks.size() == 0)
+            ast.set(0);
+
         _init_randomQuestion();
 
 
@@ -85,6 +106,20 @@ public class TestActivity extends AppCompatActivity {
         }
 
         startGame();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        ast.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        ast.stop();
     }
 
     private void _init_restoreQuestion() {
@@ -137,7 +172,8 @@ public class TestActivity extends AppCompatActivity {
     }
 
     public void startGame() {
-        // TODO
+        // Maybe ok
+        ast.start();
         askNextQuestion();
     }
 
@@ -194,6 +230,14 @@ public class TestActivity extends AppCompatActivity {
 
     public void endGame() {
         // TODO
+        ast.stop();
         API.deleteAllAskedQuestions();
+
+        Intent i = new Intent(this, FinishActivity.class);
+        i.putExtra("duration", ast.getDisplayTicks());
+        i.putExtra("correct count", correctCount);
+        //this.startActivityForResult(i, 0);
+        this.startActivity(i);
+        this.finish();
     }
 }
