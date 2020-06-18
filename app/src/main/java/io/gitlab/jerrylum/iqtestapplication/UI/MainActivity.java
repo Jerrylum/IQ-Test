@@ -1,14 +1,13 @@
-package io.gitlab.jerrylum.iqtestapplication;
+package io.gitlab.jerrylum.iqtestapplication.UI;
 
 import androidx.appcompat.app.AppCompatActivity;
+import io.gitlab.jerrylum.iqtestapplication.API;
+import io.gitlab.jerrylum.iqtestapplication.R;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,6 +48,12 @@ public class MainActivity extends AppCompatActivity {
 //
 //        Log.d("ApiLog", last.no + "," + last.question + "," + last.answer + "," + last.isCorrect);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        AllMenu.createOptionsMenu(this, R.menu.main_menu, menu);
+        return true;
     }
 
     public void onQuestionReady() {

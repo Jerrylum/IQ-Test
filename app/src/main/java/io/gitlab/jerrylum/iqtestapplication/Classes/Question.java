@@ -1,4 +1,4 @@
-package io.gitlab.jerrylum.iqtestapplication.OO;
+package io.gitlab.jerrylum.iqtestapplication.Classes;
 
 public class Question {
 

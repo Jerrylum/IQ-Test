@@ -1,12 +1,16 @@
-package io.gitlab.jerrylum.iqtestapplication;
+package io.gitlab.jerrylum.iqtestapplication.UI;
 
 import androidx.appcompat.app.AppCompatActivity;
-import io.gitlab.jerrylum.iqtestapplication.OO.Question;
-import io.gitlab.jerrylum.iqtestapplication.Timer.AndroidStopwatchTimer;
+import io.gitlab.jerrylum.iqtestapplication.API;
+import io.gitlab.jerrylum.iqtestapplication.Classes.Question;
+import io.gitlab.jerrylum.iqtestapplication.Classes.AndroidStopwatchTimer;
+import io.gitlab.jerrylum.iqtestapplication.R;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -46,6 +50,8 @@ public class TestActivity extends AppCompatActivity {
     AndroidStopwatchTimer ast;
 
     int correctCount = 0;
+
+    boolean pageChanging = false;
 
     // Level 3 variable
 
@@ -108,20 +114,6 @@ public class TestActivity extends AppCompatActivity {
         startGame();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        ast.start();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        ast.stop();
-    }
-
     private void _init_restoreQuestion() {
         asks = API.getAllAskedQuestion();
         int was_asking_q_no = API.getConfig().getInt("asking no", -1);
@@ -144,7 +136,29 @@ public class TestActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        ast.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        ast.stop();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        AllMenu.createOptionsMenu(this, R.menu.test_menu, menu);
+        return true;
+    }
+
     public void onAnswerSelected(View view) {
+        if (pageChanging) return;
+
         RadioButton rb = (RadioButton)view;
 
         API.setClickableAll(rgAnswerGroup, false);
@@ -171,6 +185,15 @@ public class TestActivity extends AppCompatActivity {
         askNextQuestion();
     }
 
+    public void menuExit_OnClick(MenuItem item) {
+        ast.stop();
+        API.setConfig().remove("asking no").commit();
+        API.deleteAllAskedQuestions();
+
+        API.toPage(this, MainActivity.class);
+        this.finish();
+    }
+
     public void startGame() {
         // Maybe ok
         ast.start();
@@ -178,6 +201,8 @@ public class TestActivity extends AppCompatActivity {
     }
 
     public void askNextQuestion() {
+        pageChanging = true;
+
         asking++;
         if (asking > asks.size()) { // such as: 6 > 5
             endGame();
@@ -226,6 +251,8 @@ public class TestActivity extends AppCompatActivity {
         btnNext.setVisibility(View.INVISIBLE);
 
         API.setConfig().putInt("asking no", askingQuestion.no).commit();
+
+        pageChanging = false;
     }
 
     public void endGame() {

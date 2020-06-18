@@ -1,4 +1,4 @@
-package io.gitlab.jerrylum.iqtestapplication.OO;
+package io.gitlab.jerrylum.iqtestapplication.Classes;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.gitlab.jerrylum.iqtestapplication.API;
-import io.gitlab.jerrylum.iqtestapplication.MainActivity;
+import io.gitlab.jerrylum.iqtestapplication.UI.MainActivity;
 
 public class DownloadQuestionsTask extends AsyncTask<String, Integer, String> {
 

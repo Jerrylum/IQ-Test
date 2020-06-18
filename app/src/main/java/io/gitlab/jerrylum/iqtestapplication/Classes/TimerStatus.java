@@ -1,4 +1,4 @@
-package io.gitlab.jerrylum.iqtestapplication.Timer;
+package io.gitlab.jerrylum.iqtestapplication.Classes;
 
 public enum TimerStatus {
     INIT,

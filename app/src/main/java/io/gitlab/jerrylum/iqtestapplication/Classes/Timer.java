@@ -1,6 +1,4 @@
-package io.gitlab.jerrylum.iqtestapplication.Timer;
-
-import android.os.health.TimerStat;
+package io.gitlab.jerrylum.iqtestapplication.Classes;
 
 public abstract class Timer {
     public long _previousTicks = 0;

@@ -9,7 +9,7 @@
     android:paddingLeft="20sp"
     android:paddingRight="20sp"
     android:paddingTop="20sp"
-    tools:context=".FinishActivity">
+    tools:context=".UI.FinishActivity">
 
     <TextView
         android:id="@+id/textView2"
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="20sp"
         android:text="You have finished the IQ test."
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/secondary_text_light"
         android:textSize="24sp" />
 
     <TableLayout
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Total time: "
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/secondary_text_light"
                 android:textSize="24sp" />
 
             <TextView
@@ -52,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="300s"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/secondary_text_light"
                 android:textSize="24sp" />
         </TableRow>
 
@@ -65,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Average time:   "
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/secondary_text_light"
                 android:textSize="24sp" />
 
             <TextView
@@ -73,7 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="60s"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/secondary_text_light"
                 android:textSize="24sp" />
         </TableRow>
 
@@ -86,7 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Correct: "
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/secondary_text_light"
                 android:textSize="24sp" />
 
             <TextView
@@ -94,7 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="4"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/secondary_text_light"
                 android:textSize="24sp" />
         </TableRow>
 

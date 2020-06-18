@@ -1,6 +1,8 @@
-package io.gitlab.jerrylum.iqtestapplication;
+package io.gitlab.jerrylum.iqtestapplication.UI;
 
 import androidx.appcompat.app.AppCompatActivity;
+import io.gitlab.jerrylum.iqtestapplication.API;
+import io.gitlab.jerrylum.iqtestapplication.R;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,13 +25,14 @@ public class FinishActivity extends AppCompatActivity {
 
         //API.saveTest(duration, correct);
 
-        ((TextView)findViewById(R.id.total_time)).setText(duration + "");
-        ((TextView)findViewById(R.id.avg_time)).setText(duration / 5.0 + "");
+        ((TextView)findViewById(R.id.total_time)).setText(duration + "s");
+        ((TextView)findViewById(R.id.avg_time)).setText(duration / 5.0 + "s");
         ((TextView)findViewById(R.id.correct_count)).setText(correct + "");
 
     }
 
     public void btnHome_OnClick(View view) {
         API.toPage(this, MainActivity.class);
+        this.finish();
     }
 }

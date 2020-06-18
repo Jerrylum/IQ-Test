@@ -14,9 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
-import io.gitlab.jerrylum.iqtestapplication.OO.DownloadQuestionsTask;
-import io.gitlab.jerrylum.iqtestapplication.OO.Question;
-import io.gitlab.jerrylum.iqtestapplication.OO.Test;
+import io.gitlab.jerrylum.iqtestapplication.Classes.DownloadQuestionsTask;
+import io.gitlab.jerrylum.iqtestapplication.Classes.Question;
+import io.gitlab.jerrylum.iqtestapplication.Classes.Test;
+import io.gitlab.jerrylum.iqtestapplication.UI.MainActivity;
 
 public class API {
     private static final String DBPATH = "/data/data/io.gitlab.jerrylum.iqtestapplication/MainDB";
@@ -42,7 +43,7 @@ public class API {
             // db.execSQL("DROP TABLE TestsLog;");
 
             sql =   "CREATE TABLE IF NOT EXISTS `QuestionsLog` (\n" +
-                    "  `questionNo` int PRIMARY KEY,\n" +
+                    "  `questionNo` INTEGER PRIMARY KEY,\n" +
                     "  `question` text,\n" +
                     "  `yourAnswer` text,\n" +
                     "  `isCorrect` ENUM (1, 0)\n" +
@@ -64,14 +65,7 @@ public class API {
         }
     }
 
-    public static void fetchCloudQuestion() {
-        if (task == null ||
-                task.getStatus().equals(AsyncTask.Status.FINISHED)) {
-            task = new DownloadQuestionsTask();
-            task.execute();
-            Log.d("ApiLog", "Start fetch question ");
-        }
-    }
+    //
 
     public static boolean saveTest(long duration, int correct) {
         try {
@@ -88,6 +82,59 @@ public class API {
             Log.d("ApiLog", "Cannot add test, " + e);
             return false;
         }
+    }
+
+    public static List<Test> getAllTest() {
+        List<Test> tests = new ArrayList<Test>();
+
+        try {
+            db = SQLiteDatabase.openDatabase(DBPATH, null, SQLiteDatabase.OPEN_READONLY);
+
+            cursor = db.rawQuery("select * from TestsLog", null);
+
+            while (cursor.moveToNext()) {
+                tests.add(new Test(
+                        cursor.getInt(0),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getInt(3),
+                        cursor.getInt(4)
+                ));
+            }
+
+            db.close();
+        } catch (SQLiteException e) {
+            Log.d("ApiLog", "Cannot get all tests, " + e);
+        }
+
+        return tests;
+    }
+
+    //
+
+    public static List<Question> getAllAskedQuestion() {
+        List<Question> q = new ArrayList<Question>();
+
+        try {
+            db = SQLiteDatabase.openDatabase(DBPATH, null, SQLiteDatabase.OPEN_READONLY);
+
+            cursor = db.rawQuery("select * from QuestionsLog", null);
+
+            while (cursor.moveToNext()) {
+                q.add(new Question(
+                        cursor.getInt(0),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getInt(3) == 1
+                ));
+            }
+
+            db.close();
+        } catch (SQLiteException e) {
+            Log.d("ApiLog", "Cannot get all tests, " + e);
+        }
+
+        return q;
     }
 
     public static boolean saveAskedQuestion(Question q) {
@@ -123,56 +170,15 @@ public class API {
         }
     }
 
-    public static List<Test> getAllTest() {
-        List<Test> tests = new ArrayList<Test>();
+    //
 
-        try {
-            db = SQLiteDatabase.openDatabase(DBPATH, null, SQLiteDatabase.OPEN_READONLY);
-
-            cursor = db.rawQuery("select * from TestsLog", null);
-
-            while (cursor.moveToNext()) {
-                tests.add(new Test(
-                        cursor.getInt(0),
-                        cursor.getString(1),
-                        cursor.getString(2),
-                        cursor.getInt(3),
-                        cursor.getInt(4)
-                ));
-            }
-
-            db.close();
-        } catch (SQLiteException e) {
-            Log.d("ApiLog", "Cannot get all tests, " + e);
+    public static void fetchCloudQuestion() {
+        if (task == null ||
+                task.getStatus().equals(AsyncTask.Status.FINISHED)) {
+            task = new DownloadQuestionsTask();
+            task.execute();
+            Log.d("ApiLog", "Start fetch question ");
         }
-
-        return tests;
-    }
-
-
-    public static List<Question> getAllAskedQuestion() {
-        List<Question> q = new ArrayList<Question>();
-
-        try {
-            db = SQLiteDatabase.openDatabase(DBPATH, null, SQLiteDatabase.OPEN_READONLY);
-
-            cursor = db.rawQuery("select * from QuestionsLog", null);
-
-            while (cursor.moveToNext()) {
-                q.add(new Question(
-                        cursor.getInt(0),
-                        cursor.getString(1),
-                        cursor.getString(2),
-                        cursor.getInt(3) == 1
-                ));
-            }
-
-            db.close();
-        } catch (SQLiteException e) {
-            Log.d("ApiLog", "Cannot get all tests, " + e);
-        }
-
-        return q;
     }
 
     public static Question getCloudQuestionById(int no) {
@@ -182,6 +188,7 @@ public class API {
         return null;
     }
 
+    //
 
     public static SharedPreferences.Editor setConfig() {
         SharedPreferences.Editor editor = MainActivity.Self.getPreferences(0).edit();
@@ -191,6 +198,8 @@ public class API {
     public static SharedPreferences getConfig() {
         return MainActivity.Self.getPreferences(0);
     }
+
+    //
 
     public static void setClickableAll(View v, boolean clickable) {
         v.setClickable(clickable);

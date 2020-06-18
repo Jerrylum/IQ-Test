@@ -1,7 +1,4 @@
-package io.gitlab.jerrylum.iqtestapplication.OO;
-
-import java.sql.Date;
-import java.sql.Time;
+package io.gitlab.jerrylum.iqtestapplication.Classes;
 
 public class Test {
     public Integer id;
