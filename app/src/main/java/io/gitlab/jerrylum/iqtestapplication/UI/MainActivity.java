@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,9 +25,6 @@ public class MainActivity extends AppCompatActivity {
         btnStart = findViewById(R.id.btn_start);
 
         API.initDatabase();
-        API.fetchCloudQuestion();
-
-        btnStart.setEnabled(API.CloudQuestions != null); // important
 
         if (API.getAllAskedQuestion().size() != 0 || API.getConfig().getInt("asking no", -1) != -1)
             btnStart.setText("Continue");
@@ -48,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
 //
 //        Log.d("ApiLog", last.no + "," + last.question + "," + last.answer + "," + last.isCorrect);
 
+//        API.toPage(this, TestsChartActivity.class);
+
     }
 
     @Override
@@ -56,12 +56,24 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public void onQuestionReady() {
-        btnStart.setEnabled(true);
-    }
-
     public void start_OnClick(View view) {
         view.setEnabled(false); // important
+        API.fetchCloudLibrary();
+    }
+
+    public void onFetchCloudLibraryFailed() {
+        API.fetchLocalLibrary();
+    }
+
+    public void onFetchLocalLibraryFailed() {
+        btnStart.setEnabled(true); // important
+
+        Toast.makeText(this, "Failed to fetch the questions", Toast.LENGTH_LONG).show();
+    }
+
+    public void onLibraryReady() {
+        // important, don't enable the button
+
         API.toPage(this, TestActivity.class);
         this.finish();
     }

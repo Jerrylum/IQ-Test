@@ -9,6 +9,7 @@ import io.gitlab.jerrylum.iqtestapplication.R;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -36,9 +37,13 @@ public class TestsLogActivity extends AppCompatActivity {
             ((TextView)view.findViewById(R.id.tno)).setText("Test " + t.id);
             ((TextView)view.findViewById(R.id.date)).setText(t.date + "");
             ((TextView)view.findViewById(R.id.time)).setText(t.time + "");
-            ((TextView)view.findViewById(R.id.duration)).setText(t.duration + "");
+            ((TextView)view.findViewById(R.id.duration)).setText(t.duration + "s");
             ((TextView)view.findViewById(R.id.correct)).setText(t.correctCount + "");
             MainLayout.addView(view);
         }
+    }
+
+    public void openChart_OnClick(View view) {
+        API.toPage(this, TestsChartActivity.class);
     }
 }

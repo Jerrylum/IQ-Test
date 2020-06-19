@@ -121,8 +121,8 @@ public class TestActivity extends AppCompatActivity {
         asking = asks.size(); // important
 
         if (was_asking_q_no != -1) {
-            Question asking_q = API.getCloudQuestionById(was_asking_q_no).clone();
-            asking_q.no = asking;
+            Question asking_q = API.getQuestionFromLibraryById(was_asking_q_no).clone();
+            asking_q.no = asking + 1;
             asks.add(asking_q);
         }
     }

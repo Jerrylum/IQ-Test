@@ -39,8 +39,16 @@ public class API {
             // Create a database if it does not exist
             db = SQLiteDatabase.openDatabase(DBPATH, null, SQLiteDatabase.CREATE_IF_NECESSARY);
 
+            // db.execSQL("DROP TABLE QuestionLibrary;");
             // db.execSQL("DROP TABLE QuestionsLog;");
             // db.execSQL("DROP TABLE TestsLog;");
+
+            sql =   "CREATE TABLE IF NOT EXISTS `QuestionLibrary` (\n" +
+                    "  `questionNo` INTEGER PRIMARY KEY,\n" +
+                    "  `question` text,\n" +
+                    "  `answer` text\n" +
+                    ");\n";
+            db.execSQL(sql);
 
             sql =   "CREATE TABLE IF NOT EXISTS `QuestionsLog` (\n" +
                     "  `questionNo` INTEGER PRIMARY KEY,\n" +
@@ -133,7 +141,7 @@ public class API {
 
             db.close();
         } catch (SQLiteException e) {
-            Log.d("ApiLog", "Cannot get all tests, " + e);
+            Log.d("ApiLog", "Cannot get all asked question, " + e);
         }
 
         return q;
@@ -174,16 +182,88 @@ public class API {
 
     //
 
-    public static void fetchCloudQuestion() {
+    public static void fetchCloudLibrary() {
         if (task == null ||
                 task.getStatus().equals(AsyncTask.Status.FINISHED)) {
             task = new DownloadQuestionsTask();
             task.execute();
-            Log.d("ApiLog", "Start fetch question ");
+            Log.d("ApiLog", "Start fetch question");
         }
     }
 
-    public static Question getCloudQuestionById(int no) {
+    public static void fetchLocalLibrary() {
+        List<Question> q = new ArrayList<Question>();
+
+        try {
+            db = SQLiteDatabase.openDatabase(DBPATH, null, SQLiteDatabase.OPEN_READONLY);
+
+            cursor = db.rawQuery("select * from QuestionLibrary order by `questionNo` asc", null);
+
+            while (cursor.moveToNext()) {
+                q.add(new Question(
+                        0,
+                        cursor.getInt(0),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        false
+                ));
+            }
+
+            db.close();
+
+            if (q.size() == 0) throw new IllegalArgumentException();
+
+            CloudQuestions = q;
+
+            MainActivity.Self.onLibraryReady();
+
+            Log.d("ApiLog", "Load local library ok");
+        } catch (SQLiteException e) {
+            Log.d("ApiLog", "Cannot get all local library, " + e);
+
+            MainActivity.Self.onFetchLocalLibraryFailed();
+        } catch (IllegalArgumentException e) {
+            Log.d("ApiLog", "Empty local library, " + e);
+
+            MainActivity.Self.onFetchLocalLibraryFailed();
+        }
+    }
+
+    public static boolean updateLocalLibrary() {
+        try {
+            if (CloudQuestions == null) return false;
+
+            db = SQLiteDatabase.openDatabase(DBPATH, null, SQLiteDatabase.OPEN_READWRITE);
+
+            db.execSQL("DELETE FROM QuestionLibrary;");
+
+            String prefix = "INSERT INTO QuestionLibrary VALUES ";
+            String postfix = "";
+            List<Object> values = new ArrayList<>();
+
+            for (int i = 0; i < CloudQuestions.size(); i++) {
+                Question q = CloudQuestions.get(i);
+                values.add(q.idx);
+                values.add(q.question);
+                values.add(q.answer);
+                postfix += (i != 0 ? "," : "") + "(?, ?, ?)";
+            }
+
+            if (CloudQuestions.size() != 0) {
+                db.execSQL(prefix + postfix, values.toArray());
+            }
+
+            db.close();
+
+            Log.d("ApiLog", "Update question database ok");
+            return true;
+        } catch (SQLiteException e) {
+            Log.d("ApiLog", "Cannot update question database, " + e);
+            return false;
+        }
+    }
+
+    public static Question getQuestionFromLibraryById(int no) {
         for (Question q : CloudQuestions)
             if (q.idx == no)
                 return q;

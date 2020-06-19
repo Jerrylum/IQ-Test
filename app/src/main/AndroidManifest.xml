@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="io.gitlab.jerrylum.iqtestapplication">
 
     <application
@@ -9,9 +10,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".UI.TestsChartActivity"
+            android:screenOrientation="landscape"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".UI.TestsLogActivity"
-            android:label="Tests Log"/>
+            android:label="Tests Log" />
         <activity
             android:name=".UI.QuestionsLogActivity"
             android:label="Questions Log" />

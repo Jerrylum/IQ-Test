@@ -51,8 +51,8 @@ public class DownloadQuestionsTask extends AsyncTask<String, Integer, String> {
 
     @Override
     protected void onPostExecute(String result) {
+        List<Question> CloudQuestions = new ArrayList<>();
         try {
-            List<Question> CloudQuestions = new ArrayList<Question>();
 
             JSONObject jObj = new JSONObject(result);
             JSONArray campuses = jObj.getJSONArray("questions");
@@ -65,11 +65,15 @@ public class DownloadQuestionsTask extends AsyncTask<String, Integer, String> {
 
             API.CloudQuestions = CloudQuestions;
 
-            MainActivity.Self.onQuestionReady();
+            API.updateLocalLibrary();
 
+            MainActivity.Self.onLibraryReady();
+
+            Log.d("ApiLog", "Load cloud library ok");
         } catch (Exception e) {
-            String error = e.getMessage();
-            Log.d("ApiLog", e.getMessage());
+            Log.d("ApiLog", "Fetch cloud library failed, " + e.getMessage());
+
+            MainActivity.Self.onFetchCloudLibraryFailed();
         }
 
     }
