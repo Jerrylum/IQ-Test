@@ -108,7 +108,7 @@ public class TestActivity extends AppCompatActivity {
 
         Log.d("ApiLog", "Random 5 questions:");
         for (Question q : asks) {
-            Log.d("ApiLog", q.no + "," + q.question + "," + q.answer + "," + q.isCorrect);
+            Log.d("ApiLog", q.idx + "," + q.question + "," + q.answer + "," + q.isCorrect);
         }
 
         startGame();
@@ -120,18 +120,26 @@ public class TestActivity extends AppCompatActivity {
 
         asking = asks.size(); // important
 
-        if (was_asking_q_no != -1)
-            asks.add(API.getCloudQuestionById(was_asking_q_no));
+        if (was_asking_q_no != -1) {
+            Question asking_q = API.getCloudQuestionById(was_asking_q_no).clone();
+            asking_q.no = asking;
+            asks.add(asking_q);
+        }
     }
 
     private void _init_randomQuestion() {
         Random rand = new Random();
 
-        while (asks.size() < 5) {
-            Question target = API.CloudQuestions.get(rand.nextInt(API.CloudQuestions.size()));
+        loop1: while (asks.size() < 5) {
+            int rand_idx = rand.nextInt(API.CloudQuestions.size());
+            Question target = API.CloudQuestions.get(rand_idx).clone();
 
-            if (asks.indexOf(target) == -1)
-                asks.add(target);
+            for (Question always : asks)
+                if (always.idx == target.idx)
+                    continue loop1;
+
+            target.no = asks.size() + 1;
+            asks.add(target);
         }
 
     }
@@ -172,6 +180,7 @@ public class TestActivity extends AppCompatActivity {
 
         API.saveAskedQuestion(new Question(
                 askingQuestion.no,
+                askingQuestion.idx,
                 askingQuestion.question,
                 rb.getText() + "",
                 correctBtn == rb
@@ -250,7 +259,7 @@ public class TestActivity extends AppCompatActivity {
         tvTips.setText("");
         btnNext.setVisibility(View.INVISIBLE);
 
-        API.setConfig().putInt("asking no", askingQuestion.no).commit();
+        API.setConfig().putInt("asking no", askingQuestion.idx).commit();
 
         pageChanging = false;
     }

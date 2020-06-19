@@ -57,10 +57,10 @@ public class DownloadQuestionsTask extends AsyncTask<String, Integer, String> {
             JSONObject jObj = new JSONObject(result);
             JSONArray campuses = jObj.getJSONArray("questions");
 
-            //items = new String[campuses.length()];
             for (int i = 0; i < campuses.length(); i++) {
                 JSONObject obj = campuses.getJSONObject(i);
-                CloudQuestions.add(new Question(i, obj.getString("question"), obj.getString("answer"), false));
+                // we set the question no to 0 since we don't know what is it right now.
+                CloudQuestions.add(new Question(0, i, obj.getString("question"), obj.getString("answer"), false));
             }
 
             API.CloudQuestions = CloudQuestions;
@@ -69,7 +69,7 @@ public class DownloadQuestionsTask extends AsyncTask<String, Integer, String> {
 
         } catch (Exception e) {
             String error = e.getMessage();
-            Log.d("jsonexception", e.getMessage());
+            Log.d("ApiLog", e.getMessage());
         }
 
     }

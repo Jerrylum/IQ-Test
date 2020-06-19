@@ -3,18 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="30sp">
+    android:orientation="vertical">
 
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/qno"
+            android:id="@+id/tno"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Q0"
+            android:text="Test 0"
             android:textSize="24sp"
             android:typeface="normal" />
     </TableRow>
@@ -27,12 +26,12 @@
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ID: "
+            android:text="Date: "
             android:textSize="18sp"
             android:typeface="normal" />
 
         <TextView
-            android:id="@+id/idx"
+            android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ha"
@@ -48,12 +47,12 @@
             android:id="@+id/textView9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Question: "
+            android:text="Time: "
             android:textSize="18sp"
             android:typeface="normal" />
 
         <TextView
-            android:id="@+id/question"
+            android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ha"
@@ -69,12 +68,12 @@
             android:id="@+id/textView11"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Answer: "
+            android:text="Duration: "
             android:textSize="18sp"
             android:typeface="normal" />
 
         <TextView
-            android:id="@+id/answer"
+            android:id="@+id/duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ha"

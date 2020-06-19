@@ -28,7 +28,8 @@ public class QuestionsLogActivity extends AppCompatActivity {
 
         for (Question q : questions) {
             TableLayout view = (TableLayout) LayoutInflater.from(this).inflate(R.layout.view_question, null);
-            ((TextView)view.findViewById(R.id.id)).setText(q.no + "");
+            ((TextView)view.findViewById(R.id.qno)).setText("Q" + q.no);
+            ((TextView)view.findViewById(R.id.idx)).setText(q.idx + "");
             ((TextView)view.findViewById(R.id.question)).setText(q.question + "");
             ((TextView)view.findViewById(R.id.answer)).setText(q.answer + "");
             ((TextView)view.findViewById(R.id.correct)).setText(q.isCorrect ? "Yes" : "No");

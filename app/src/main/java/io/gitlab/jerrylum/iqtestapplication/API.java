@@ -44,6 +44,7 @@ public class API {
 
             sql =   "CREATE TABLE IF NOT EXISTS `QuestionsLog` (\n" +
                     "  `questionNo` INTEGER PRIMARY KEY,\n" +
+                    "  `questionIdx` INTEGER,\n" +
                     "  `question` text,\n" +
                     "  `yourAnswer` text,\n" +
                     "  `isCorrect` ENUM (1, 0)\n" +
@@ -90,7 +91,7 @@ public class API {
         try {
             db = SQLiteDatabase.openDatabase(DBPATH, null, SQLiteDatabase.OPEN_READONLY);
 
-            cursor = db.rawQuery("select * from TestsLog", null);
+            cursor = db.rawQuery("select * from TestsLog order by `id` desc", null);
 
             while (cursor.moveToNext()) {
                 tests.add(new Test(
@@ -118,14 +119,15 @@ public class API {
         try {
             db = SQLiteDatabase.openDatabase(DBPATH, null, SQLiteDatabase.OPEN_READONLY);
 
-            cursor = db.rawQuery("select * from QuestionsLog", null);
+            cursor = db.rawQuery("select * from QuestionsLog order by `questionNo` asc", null);
 
             while (cursor.moveToNext()) {
                 q.add(new Question(
                         cursor.getInt(0),
-                        cursor.getString(1),
+                        cursor.getInt(1),
                         cursor.getString(2),
-                        cursor.getInt(3) == 1
+                        cursor.getString(3),
+                        cursor.getInt(4) == 1
                 ));
             }
 
@@ -142,11 +144,11 @@ public class API {
             db = SQLiteDatabase.openDatabase(DBPATH, null, SQLiteDatabase.OPEN_READWRITE);
 
             db.execSQL("INSERT INTO QuestionsLog " +
-                            "VALUES (?, ?, ?, ?)",
-                    new Object[] {q.no, q.question, q.answer, q.isCorrect ? 1 : 0}
+                            "VALUES (?, ?, ?, ?, ?)",
+                    new Object[] {q.no, q.idx, q.question, q.answer, q.isCorrect ? 1 : 0}
             );
 
-            Log.d("ApiLog", "Add question: " + q.no);
+            Log.d("ApiLog", "Add question: " + q.idx);
 
             db.close();
             return true;
@@ -183,7 +185,7 @@ public class API {
 
     public static Question getCloudQuestionById(int no) {
         for (Question q : CloudQuestions)
-            if (q.no == no)
+            if (q.idx == no)
                 return q;
         return null;
     }

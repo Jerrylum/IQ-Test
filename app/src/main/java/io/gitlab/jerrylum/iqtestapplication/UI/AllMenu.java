@@ -27,7 +27,7 @@ public class AllMenu {
         menu.findItem(R.id.tlog).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Log.d("ApiLog", "To tests log page");
+                API.toPage(a, TestsLogActivity.class);
                 return true;
             }
         });

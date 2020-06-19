@@ -23,7 +23,7 @@ public class FinishActivity extends AppCompatActivity {
 
         duration /= 1000;
 
-        //API.saveTest(duration, correct);
+        API.saveTest(duration, correct);
 
         ((TextView)findViewById(R.id.total_time)).setText(duration + "s");
         ((TextView)findViewById(R.id.avg_time)).setText(duration / 5.0 + "s");

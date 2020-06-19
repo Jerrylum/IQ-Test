@@ -9,12 +9,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UI.QuestionsLogActivity"
-                  android:label="Questions Log"/>
-        <activity android:name=".UI.FinishActivity"
-                  android:label="Result"/>
-        <activity android:name=".UI.TestActivity"
-                  android:label="Tests"/>
+        <activity
+            android:name=".UI.TestsLogActivity"
+            android:label="Tests Log"/>
+        <activity
+            android:name=".UI.QuestionsLogActivity"
+            android:label="Questions Log" />
+        <activity
+            android:name=".UI.FinishActivity"
+            android:label="Result" />
+        <activity
+            android:name=".UI.TestActivity"
+            android:label="Tests" />
         <activity android:name=".UI.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
